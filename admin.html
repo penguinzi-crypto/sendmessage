@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin dashboard — view anonymous messages.">
+  <title>Admin — Messages</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="public/Icon.png">
+</head>
+<body>
+
+  <!-- ===== SPLASH SCREEN ===== -->
+  <div class="splash-screen" id="splashScreen">
+    <img src="public/Icon.png" alt="Logo" class="splash-logo">
+    <div class="splash-bar">
+      <div class="splash-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- ===== BACKGROUND LAYERS ===== -->
+  <div class="bg-image"></div>
+  <div class="bg-overlay"></div>
+  <div class="bg-dots"></div>
+
+  <!-- ===== FLOATING JAPANESE QUOTES ===== -->
+  <div class="quotes-layer">
+    <div class="quote-column">
+      <span>痛みを知れ</span><span>戦い続けろ</span><span>俺は自由だ</span><span>夢を見ろ</span><span>強くなれ</span><span>立ち上がれ</span><span>痛みを知れ</span><span>戦い続けろ</span>
+    </div>
+    <div class="quote-column">
+      <span>諦めるな</span><span>信じる心が力になる</span><span>限界を超えろ</span><span>前に進め</span><span>仲間を守る</span><span>諦めるな</span><span>信じる心が力になる</span>
+    </div>
+    <div class="quote-column">
+      <span>真実はいつも一つ</span><span>俺が正義だ</span><span>全力で行け</span><span>心を燃やせ</span><span>負けるな</span><span>真実はいつも一つ</span><span>俺が正義だ</span>
+    </div>
+    <div class="quote-column">
+      <span>覚悟を決めろ</span><span>希望を捨てるな</span><span>運命を変えろ</span><span>絶望の先に光がある</span><span>覚悟を決めろ</span><span>希望を捨てるな</span>
+    </div>
+    <div class="quote-column">
+      <span>弱さを認めろ</span><span>己を信じろ</span><span>道を切り開け</span><span>生きることは戦うこと</span><span>弱さを認めろ</span><span>己を信じろ</span>
+    </div>
+    <div class="quote-column">
+      <span>何度でも立ち上がれ</span><span>世界を変えろ</span><span>魂を燃やせ</span><span>自分を超えろ</span><span>何度でも立ち上がれ</span><span>世界を変えろ</span>
+    </div>
+  </div>
+
+  <!-- ===== LOGIN SECTION ===== -->
+  <div class="page-wrapper" id="loginSection" style="opacity: 0;">
+    <div class="glass-card login-container" style="max-width: 440px;">
+      <div class="card-glow"></div>
+      <div class="card-glass"></div>
+      <div class="card-content">
+
+        <div class="form-header">
+          <img src="public/Icon.png" alt="Logo" class="form-logo">
+          <h1 class="form-title">Admin Login</h1>
+          <p class="form-subtitle">Sign in with your magic link to view anonymous messages.</p>
+        </div>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="emailInput">Email Address</label>
+            <input
+              type="email"
+              id="emailInput"
+              class="form-input"
+              placeholder="Enter admin email"
+              required
+            >
+          </div>
+
+          <button type="submit" id="loginBtn" class="btn-primary">
+            <span>Send Magic Link</span>
+          </button>
+        </form>
+
+        <div id="statusMsg" class="status-msg"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD SECTION ===== -->
+  <div class="page-wrapper" id="dashboardSection" style="display: none; align-items: flex-start; padding-top: 40px;">
+
+    <div class="dashboard">
+      <div class="dash-header">
+        <div class="dash-title-group">
+          <div class="dash-icon">
+            <img src="public/Icon.png" alt="Logo">
+          </div>
+          <div>
+            <div class="dash-title">Messages</div>
+            <div class="dash-count" id="messageCount">Loading...</div>
+          </div>
+        </div>
+        <div class="dash-actions">
+          <button class="btn-secondary" id="refreshBtn">↻ Refresh</button>
+          <button class="btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <div class="message-list" id="messageList">
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/admin.js?v=2"></script>
+
+</body>
+</html>
