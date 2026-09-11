@@ -173,7 +173,7 @@ function renderMessages(messages) {
     const name = msg.name || 'Anonymous';
     const initial = name === 'Anonymous' ? '?' : name.charAt(0).toUpperCase();
     const avatarClass = name === 'Anonymous' ? 'msg-avatar anonymous' : 'msg-avatar';
-    const time = formatTime(msg.created_at);
+    const timeInfo = formatTime(msg.created_at);
     const locationWidget = renderLocationWidget(msg);
 
     return `
@@ -186,10 +186,14 @@ function renderMessages(messages) {
               <div class="${avatarClass}">${initial}</div>
               <div>
                 <div class="msg-name">${escapeHtml(name)}</div>
-                <div class="msg-time">${time}</div>
+                <div class="msg-time" title="Exact Sent Time: ${timeInfo.exactDate} at ${timeInfo.exactTime}">
+                  <span>📅 ${timeInfo.exactDate}</span>
+                  <span>🕒 ${timeInfo.exactTime}</span>
+                  <span class="time-relative">${timeInfo.relative}</span>
+                </div>
               </div>
             </div>
-            <button class="btn-delete" onclick="deleteMessage('${msg.id}')" title="Delete message">🗑️ Delete</button>
+            <button class="btn-delete" onclick="deleteMessage('${msg.id}')" title="Delete this message">🗑️ Delete</button>
           </div>
           <div class="msg-body">${escapeHtml(msg.message)}</div>
           ${locationWidget}
@@ -199,44 +203,88 @@ function renderMessages(messages) {
   }).join('');
 }
 
-// Delete a message
-async function deleteMessage(id) {
-  if (!confirm('Delete this message?')) return;
+// Delete a message (explicitly attached to window)
+window.deleteMessage = async function(id) {
+  if (!confirm('Are you sure you want to permanently delete this message?')) return;
+
+  const btn = document.querySelector(`button[onclick*="${id}"]`);
+  const originalText = btn ? btn.innerHTML : '🗑️ Delete';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = 'Deleting...';
+  }
 
   try {
     const client = getClient();
-    const { error } = await client
+    if (!client) throw new Error('Supabase client is not ready. Please refresh.');
+
+    const { data, error } = await client
       .from('messages')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .select();
 
-    if (error) throw error;
-    loadMessages(); // Refresh
+    if (error) {
+      throw error;
+    }
+
+    // If RLS blocked the delete, 0 rows were deleted
+    if (!data || data.length === 0) {
+      throw new Error('Supabase Row Level Security (RLS) blocked the delete. Make sure the DELETE policy is enabled in Supabase SQL Editor.');
+    }
+
+    // Refresh dashboard list
+    await loadMessages();
   } catch (err) {
     console.error('Delete error:', err);
-    alert('Failed to delete message.');
+    alert('Could not delete message:\n' + (err.message || 'Permission denied'));
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
   }
-}
+};
 
-// Format timestamp
+// Format timestamp with exact date, exact time, and relative age
 function formatTime(timestamp) {
+  if (!timestamp) return { exactDate: 'Unknown date', exactTime: '', relative: '', display: 'Unknown' };
   const date = new Date(timestamp);
+
+  // Exact localized date e.g. "Sep 11, 2026"
+  const exactDate = date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  // Exact localized time e.g. "10:45 PM"
+  const exactTime = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+
+  // Relative elapsed time
   const now = new Date();
   const diffMs = now - date;
+  const diffSecs = Math.floor(diffMs / 1000);
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  let relative = 'Just now';
+  if (diffMins < 1) relative = `${Math.max(1, diffSecs)}s ago`;
+  else if (diffMins < 60) relative = `${diffMins}m ago`;
+  else if (diffHours < 24) relative = `${diffHours}h ago`;
+  else if (diffDays < 7) relative = `${diffDays}d ago`;
+  else relative = `${diffDays}d ago`;
 
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-  });
+  return {
+    exactDate,
+    exactTime,
+    relative,
+    display: `${exactDate} • ${exactTime} (${relative})`
+  };
 }
 
 // Render rich exact location widget

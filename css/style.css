@@ -735,8 +735,27 @@ body {
 }
 
 .msg-time {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.msg-time strong {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.msg-time .time-relative {
+  color: #a78bfa;
+  font-weight: 600;
+  background: rgba(167, 139, 250, 0.1);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 0.68rem;
 }
 
 .msg-body {
