@@ -15,6 +15,8 @@ const loginSection = document.getElementById('loginSection');
 const dashboardSection = document.getElementById('dashboardSection');
 const loginForm = document.getElementById('loginForm');
 const emailInput = document.getElementById('emailInput');
+const passwordInput = document.getElementById('passwordInput');
+const togglePassword = document.getElementById('togglePassword');
 const loginBtn = document.getElementById('loginBtn');
 const statusMsg = document.getElementById('statusMsg');
 const messageList = document.getElementById('messageList');
@@ -22,16 +24,31 @@ const messageCount = document.getElementById('messageCount');
 const logoutBtn = document.getElementById('logoutBtn');
 const refreshBtn = document.getElementById('refreshBtn');
 
+function getClient() {
+  return window.supabaseClient || window.supabase;
+}
+
+// Password visibility toggle
+if (togglePassword && passwordInput) {
+  togglePassword.addEventListener('click', () => {
+    const isPass = passwordInput.type === 'password';
+    passwordInput.type = isPass ? 'text' : 'password';
+    togglePassword.textContent = isPass ? '🙈' : '👁️';
+  });
+}
+
 // Check auth state on load
 async function checkAuth() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const client = getClient();
+  if (!client || !client.auth) return;
+
+  const { data: { session } } = await client.auth.getSession();
 
   if (session && session.user.email === ADMIN_EMAIL) {
     showDashboard();
     loadMessages();
   } else if (session && session.user.email !== ADMIN_EMAIL) {
-    // Not the admin — sign them out
-    await supabase.auth.signOut();
+    await client.auth.signOut();
     showLogin();
     showStatus('Access denied. Only the admin can log in.', 'error');
   } else {
@@ -39,55 +56,67 @@ async function checkAuth() {
   }
 }
 
-// Listen for auth changes (magic link callback)
-supabase.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session) {
-    if (session.user.email === ADMIN_EMAIL) {
-      showDashboard();
-      loadMessages();
-    } else {
-      await supabase.auth.signOut();
-      showLogin();
-      showStatus('Access denied. Only the admin can log in.', 'error');
-    }
-  }
-  if (event === 'SIGNED_OUT') {
-    showLogin();
-  }
-});
+// Listen for auth changes
+(function setupAuthListener() {
+  const client = getClient();
+  if (!client || !client.auth) return;
 
-// Send magic link
+  client.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      if (session.user.email === ADMIN_EMAIL) {
+        showDashboard();
+        loadMessages();
+      } else {
+        await client.auth.signOut();
+        showLogin();
+        showStatus('Access denied. Only the admin can log in.', 'error');
+      }
+    }
+    if (event === 'SIGNED_OUT') {
+      showLogin();
+    }
+  });
+})();
+
+// Email + Password Sign In
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const email = emailInput.value.trim();
-  if (!email) return;
+  const password = passwordInput.value;
+
+  if (!email || !password) return;
 
   if (email !== ADMIN_EMAIL) {
-    showStatus('Access denied. Only the admin can log in.', 'error');
+    showStatus('Access denied. Invalid admin email.', 'error');
     return;
   }
 
   loginBtn.disabled = true;
-  loginBtn.innerHTML = '<span><div class="spinner"></div> Sending link...</span>';
+  loginBtn.innerHTML = '<span><div class="spinner"></div> Signing in...</span>';
 
   try {
-    const { error } = await supabase.auth.signInWithOtp({
+    const client = getClient();
+    if (!client || !client.auth) {
+      throw new Error('Authentication service is initializing. Please try again.');
+    }
+
+    const { data, error } = await client.auth.signInWithPassword({
       email: email,
-      options: {
-        emailRedirectTo: window.location.href
-      }
+      password: password
     });
 
     if (error) throw error;
 
-    showStatus('✨ Magic link sent! Check your Gmail inbox.', 'success');
+    showStatus('Sign in successful!', 'success');
+    showDashboard();
+    loadMessages();
   } catch (err) {
     console.error('Login error:', err);
-    showStatus('Failed to send magic link. Try again.', 'error');
+    showStatus(err.message || 'Invalid email or password.', 'error');
   } finally {
     loginBtn.disabled = false;
-    loginBtn.innerHTML = '<span>Send Magic Link ✉️</span>';
+    loginBtn.innerHTML = '<span>Sign In</span>';
   }
 });
 
@@ -101,7 +130,12 @@ async function loadMessages() {
   `;
 
   try {
-    const { data, error } = await supabase
+    const client = getClient();
+    if (!client || typeof client.from !== 'function') {
+      throw new Error('Supabase client is not initialized.');
+    }
+
+    const { data, error } = await client
       .from('messages')
       .select('*')
       .order('created_at', { ascending: false });
@@ -170,7 +204,8 @@ async function deleteMessage(id) {
   if (!confirm('Delete this message?')) return;
 
   try {
-    const { error } = await supabase
+    const client = getClient();
+    const { error } = await client
       .from('messages')
       .delete()
       .eq('id', id);
@@ -287,9 +322,13 @@ function showStatus(text, type) {
 
 // Logout
 logoutBtn.addEventListener('click', async () => {
-  await supabase.auth.signOut();
+  const client = getClient();
+  if (client && client.auth) {
+    await client.auth.signOut();
+  }
   showLogin();
   statusMsg.className = 'status-msg';
+  statusMsg.style.display = 'none';
 });
 
 // Refresh
