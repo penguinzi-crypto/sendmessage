@@ -218,19 +218,17 @@ window.deleteMessage = async function(id) {
     const client = getClient();
     if (!client) throw new Error('Supabase client is not ready. Please refresh.');
 
-    const { data, error } = await client
+    const { error, count } = await client
       .from('messages')
-      .delete()
-      .eq('id', id)
-      .select();
+      .delete({ count: 'exact' })
+      .eq('id', id);
 
     if (error) {
       throw error;
     }
 
-    // If RLS blocked the delete, 0 rows were deleted
-    if (!data || data.length === 0) {
-      throw new Error('Supabase Row Level Security (RLS) blocked the delete. Make sure the DELETE policy is enabled in Supabase SQL Editor.');
+    if (count === 0) {
+      throw new Error('Supabase Row Level Security (RLS) blocked the delete. Please run the SQL command below in your Supabase SQL Editor.');
     }
 
     // Refresh dashboard list
