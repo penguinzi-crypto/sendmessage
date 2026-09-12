@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Send an anonymous message. Say what's on your mind.">
+  <meta name="description" content="Denzeru — Gamer, Otaku, Coder. Check out my profile and send me an anonymous message.">
   <meta name="google" content="notranslate">
-  <title>Send Anonymous Message</title>
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <title>Denzeru — Profile</title>
+  <link rel="stylesheet" href="css/style.css?v=6">
   <link rel="icon" href="public/Icon.png">
 </head>
 <body>
@@ -46,7 +46,6 @@
         </button>
       </div>
 
-      <!-- Warning / Error prompt if blocked -->
       <div class="gate-error" id="locationGateError" style="display: none;">
         <div class="gate-error-header">
           <span class="gate-error-icon">⚠️</span>
@@ -73,7 +72,7 @@
 
   <!-- ===== BACKGROUND LAYERS ===== -->
   <div class="bg-image"></div>
-  <div class="bg-overlay"></div>
+  <div class="bg-overlay landing-overlay"></div>
   <div class="bg-dots"></div>
 
   <!-- ===== FLOATING JAPANESE QUOTES ===== -->
@@ -135,84 +134,445 @@
     </div>
   </div>
 
-  <!-- ===== MAIN CONTENT ===== -->
-  <div class="page-wrapper" id="mainContent" style="opacity: 0;">
+  <!-- ===== NAVBAR ===== -->
+  <nav class="landing-nav" id="landingNav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="public/Icon.png" alt="Logo">
+        <span>Denzeru</span>
+      </a>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#hobbies">Hobbies</a>
+        <a href="message.html" class="nav-cta">Send Message</a>
+      </div>
+    </div>
+  </nav>
 
-    <div class="glass-card">
-      <div class="card-glow"></div>
-      <div class="card-glass"></div>
-      <div class="card-content">
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero-section" id="hero">
+    <div class="hero-content">
 
-        <div class="form-header">
-          <img src="public/Icon.png" alt="Logo" class="form-logo">
-          <h1 class="form-title">send me a message</h1>
-          <p class="form-subtitle">Say anything — questions, feedback, confessions, or just random thoughts. It's completely anonymous.</p>
+      <!-- Avatar -->
+      <div class="hero-avatar-wrapper reveal">
+        <div class="avatar-glow-ring"></div>
+        <div class="avatar-glow-ring delay"></div>
+        <img src="public/Denzeru.jpg" alt="Denzeru" class="hero-avatar">
+      </div>
+
+      <!-- Text -->
+      <div class="hero-text reveal">
+        <p class="hero-greeting">こんにちは, I'm</p>
+        <h1 class="hero-name">
+          <span id="heroTyping" data-text="Denzeru" class="typing-text"></span>
+          <span class="typing-cursor">|</span>
+        </h1>
+        <p class="hero-tagline">
+          <span class="tagline-item">he/him</span>
+        </p>
+      </div>
+
+      <!-- Social Links -->
+      <div class="hero-socials reveal">
+        <a href="#" class="social-btn" title="Facebook" aria-label="Facebook">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="TikTok" aria-label="TikTok">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.81.13v-3.5a6.37 6.37 0 00-.81-.05A6.34 6.34 0 003.15 15.4a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.13a8.16 8.16 0 004.76 1.53v-3.5a4.84 4.84 0 01-1-.47z"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Instagram" aria-label="Instagram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="hero-cta reveal">
+        <a href="message.html" class="cta-button">
+          <span class="cta-glow"></span>
+          <span class="cta-text">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path>
+            </svg>
+            Send me an anonymous message
+          </span>
+        </a>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator reveal">
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
         </div>
+        <span>Scroll down</span>
+      </div>
 
-        <div class="info-banner">
-          <span class="info-icon">🔒</span>
-          <span>Your identity is <strong>100% anonymous</strong>. I won't see your name, email, or any personal info unless you choose to share it.</span>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT SECTION ===== -->
+  <section class="landing-section" id="about">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-tag">// about me</span>
+        <h2 class="section-title">Who is Denzeru?</h2>
+      </div>
+
+      <div class="about-card reveal">
+        <div class="about-card-glow"></div>
+        <div class="about-card-glass"></div>
+        <div class="about-card-content">
+          <p>
+            Hey! I'm <strong>Denzeru</strong> — a Filipino gamer, anime enthusiast, and aspiring developer.
+            I spend most of my time grinding ranked games, binge-watching anime, and building cool things with code.
+          </p>
+          <p>
+            When I'm not glued to a screen, you'll probably find me playing table tennis or vibing to OPM tracks.
+            I built this site from scratch because I wanted a space where people can reach out to me anonymously — 
+            no filters, no judgment. Feel free to say anything! 🚀
+          </p>
+          <div class="about-stats">
+            <div class="stat-item">
+              <span class="stat-number">5+</span>
+              <span class="stat-label">Favorite Anime</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">4</span>
+              <span class="stat-label">Games I Play</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">∞</span>
+              <span class="stat-label">Curiosity</span>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <form id="messageForm" autocomplete="off">
-
-          <div class="form-group">
-            <label class="form-label" for="nameInput">
-              Name or Codename <span class="optional">— optional</span>
-            </label>
-            <input
-              type="text"
-              id="nameInput"
-              class="form-input"
-              placeholder="Leave blank to stay fully anonymous"
-              maxlength="50"
-            >
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="messageInput">
-              Your Message
-            </label>
-            <textarea
-              id="messageInput"
-              class="form-textarea"
-              placeholder="What's on your mind?"
-              maxlength="500"
-              required
-            ></textarea>
-            <div id="charCounter" class="char-counter">0 / 500</div>
-          </div>
-
-          <button type="submit" id="submitBtn" class="btn-primary">
-            <span>Send Message</span>
-          </button>
-
-        </form>
-
+  <!-- ===== HOBBIES SECTION ===== -->
+  <section class="landing-section hobbies-section" id="hobbies">
+    <div class="section-inner hobbies-header-inner">
+      <div class="section-header reveal">
+        <span class="section-tag">// 趣味 • hobbies & interests</span>
+        <h2 class="section-title">Things I Love</h2>
+        <p class="section-subtitle">A glimpse into what fuels my energy & creativity</p>
       </div>
     </div>
 
-    <div class="footer">
-      <p class="footer-text">Your identity is never stored or shared.</p>
-    </div>
-  </div>
+    <!-- Diagonal Strips with Image Conveyors -->
+    <div class="strips-wrapper">
 
-  <!-- ===== TOAST NOTIFICATIONS ===== -->
-  <div class="toast-container" id="toastContainer"></div>
+      <!-- Strip 1: GAMING -->
+      <div class="hobby-strip strip-gaming strip-tilt-left reveal" style="--strip-accent: #8b5cf6;">
+        <div class="strip-blade-accent"></div>
+        <div class="strip-badge">
+          <span class="strip-kanji">ゲーム</span>
+          <h3 class="strip-title">GAMING</h3>
+        </div>
+        <div class="conveyor-wrap">
+          <div class="conveyor-track conveyor-track-left">
+            <div class="conveyor-group">
+              <div class="conveyor-item"><img src="public/hobbies/gaming1.jpg" alt="Mobile Legends"><span class="conveyor-caption">Mobile Legends</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming2.jpg" alt="Call of Duty"><span class="conveyor-caption">Call of Duty</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming3.jpg" alt="Minecraft"><span class="conveyor-caption">Minecraft</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming4.jpg" alt="Roblox"><span class="conveyor-caption">Roblox</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming1.jpg" alt="Ranked Grinds"><span class="conveyor-caption">Ranked Grinds</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming2.jpg" alt="Battle Royale"><span class="conveyor-caption">Battle Royale</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming3.jpg" alt="Survival World"><span class="conveyor-caption">Survival World</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming4.jpg" alt="Multiplayer Fun"><span class="conveyor-caption">Multiplayer Fun</span></div>
+            </div>
+            <div class="conveyor-group" aria-hidden="true">
+              <div class="conveyor-item"><img src="public/hobbies/gaming1.jpg" alt="Mobile Legends"><span class="conveyor-caption">Mobile Legends</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming2.jpg" alt="Call of Duty"><span class="conveyor-caption">Call of Duty</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming3.jpg" alt="Minecraft"><span class="conveyor-caption">Minecraft</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming4.jpg" alt="Roblox"><span class="conveyor-caption">Roblox</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming1.jpg" alt="Ranked Grinds"><span class="conveyor-caption">Ranked Grinds</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming2.jpg" alt="Battle Royale"><span class="conveyor-caption">Battle Royale</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming3.jpg" alt="Survival World"><span class="conveyor-caption">Survival World</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/gaming4.jpg" alt="Multiplayer Fun"><span class="conveyor-caption">Multiplayer Fun</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <!-- ===== SUCCESS OVERLAY ===== -->
-  <div id="successOverlay" class="success-overlay">
-    <div class="success-content">
-      <div class="success-icon">✓</div>
-      <h2>Message Sent!</h2>
-      <p>Your anonymous message has been delivered.</p>
+      <!-- Strip 2: ANIME -->
+      <div class="hobby-strip strip-anime strip-tilt-right reveal" style="--strip-accent: #6366f1;">
+        <div class="strip-blade-accent"></div>
+        <div class="strip-badge">
+          <span class="strip-kanji">アニメ</span>
+          <h3 class="strip-title">ANIME</h3>
+        </div>
+        <div class="conveyor-wrap">
+          <div class="conveyor-track conveyor-track-right">
+            <div class="conveyor-group">
+              <div class="conveyor-item"><img src="public/hobbies/anime1.jpg" alt="One Piece"><span class="conveyor-caption">One Piece</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime2.jpg" alt="Demon Slayer"><span class="conveyor-caption">Demon Slayer</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime3.jpg" alt="Attack on Titan"><span class="conveyor-caption">Attack on Titan</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime4.jpg" alt="Solo Leveling"><span class="conveyor-caption">Solo Leveling</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime5.jpg" alt="Hunter X Hunter"><span class="conveyor-caption">Hunter X Hunter</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime1.jpg" alt="Grand Line"><span class="conveyor-caption">Grand Line</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime2.jpg" alt="Katana Arts"><span class="conveyor-caption">Katana Arts</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime3.jpg" alt="Scouting Legion"><span class="conveyor-caption">Scouting Legion</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime4.jpg" alt="Shadow Monarch"><span class="conveyor-caption">Shadow Monarch</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime5.jpg" alt="Nen Hunter"><span class="conveyor-caption">Nen Hunter</span></div>
+            </div>
+            <div class="conveyor-group" aria-hidden="true">
+              <div class="conveyor-item"><img src="public/hobbies/anime1.jpg" alt="One Piece"><span class="conveyor-caption">One Piece</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime2.jpg" alt="Demon Slayer"><span class="conveyor-caption">Demon Slayer</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime3.jpg" alt="Attack on Titan"><span class="conveyor-caption">Attack on Titan</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime4.jpg" alt="Solo Leveling"><span class="conveyor-caption">Solo Leveling</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime5.jpg" alt="Hunter X Hunter"><span class="conveyor-caption">Hunter X Hunter</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime1.jpg" alt="Grand Line"><span class="conveyor-caption">Grand Line</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime2.jpg" alt="Katana Arts"><span class="conveyor-caption">Katana Arts</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime3.jpg" alt="Scouting Legion"><span class="conveyor-caption">Scouting Legion</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime4.jpg" alt="Shadow Monarch"><span class="conveyor-caption">Shadow Monarch</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/anime5.jpg" alt="Nen Hunter"><span class="conveyor-caption">Nen Hunter</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strip 3: MUSIC -->
+      <div class="hobby-strip strip-music strip-tilt-left reveal" style="--strip-accent: #a855f7;">
+        <div class="strip-blade-accent"></div>
+        <div class="strip-badge">
+          <span class="strip-kanji">音楽</span>
+          <h3 class="strip-title">MUSIC</h3>
+        </div>
+        <div class="conveyor-wrap">
+          <div class="conveyor-track conveyor-track-left">
+            <div class="conveyor-group">
+              <div class="conveyor-item"><img src="public/hobbies/music1.jpg" alt="OPM Acoustic"><span class="conveyor-caption">OPM Acoustic</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music2.jpg" alt="Pinoy Classics"><span class="conveyor-caption">Pinoy Classics</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music3.jpg" alt="Lo-Fi Beats"><span class="conveyor-caption">Lo-Fi Jam</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music4.jpg" alt="Live Concerts"><span class="conveyor-caption">Live Concerts</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music1.jpg" alt="Acoustic Jams"><span class="conveyor-caption">Acoustic Jams</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music2.jpg" alt="Vinyl Warmth"><span class="conveyor-caption">Vinyl Warmth</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music3.jpg" alt="Headphone Vibes"><span class="conveyor-caption">Headphone Vibes</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music4.jpg" alt="Concert Energy"><span class="conveyor-caption">Concert Energy</span></div>
+            </div>
+            <div class="conveyor-group" aria-hidden="true">
+              <div class="conveyor-item"><img src="public/hobbies/music1.jpg" alt="OPM Acoustic"><span class="conveyor-caption">OPM Acoustic</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music2.jpg" alt="Pinoy Classics"><span class="conveyor-caption">Pinoy Classics</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music3.jpg" alt="Lo-Fi Beats"><span class="conveyor-caption">Lo-Fi Jam</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music4.jpg" alt="Live Concerts"><span class="conveyor-caption">Live Concerts</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music1.jpg" alt="Acoustic Jams"><span class="conveyor-caption">Acoustic Jams</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music2.jpg" alt="Vinyl Warmth"><span class="conveyor-caption">Vinyl Warmth</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music3.jpg" alt="Headphone Vibes"><span class="conveyor-caption">Headphone Vibes</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/music4.jpg" alt="Concert Energy"><span class="conveyor-caption">Concert Energy</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strip 4: SPORTS -->
+      <div class="hobby-strip strip-sports strip-tilt-right reveal" style="--strip-accent: #c084fc;">
+        <div class="strip-blade-accent"></div>
+        <div class="strip-badge">
+          <span class="strip-kanji">運動</span>
+          <h3 class="strip-title">SPORTS</h3>
+        </div>
+        <div class="conveyor-wrap">
+          <div class="conveyor-track conveyor-track-right">
+            <div class="conveyor-group">
+              <div class="conveyor-item"><img src="public/hobbies/sports1.jpg" alt="Table Tennis"><span class="conveyor-caption">Table Tennis</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports2.jpg" alt="Match Point"><span class="conveyor-caption">Match Point</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports3.jpg" alt="Racket Action"><span class="conveyor-caption">Racket Action</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports4.jpg" alt="Speed & Agility"><span class="conveyor-caption">Speed & Agility</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports1.jpg" alt="Ping Pong Smash"><span class="conveyor-caption">Ping Pong Smash</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports2.jpg" alt="Fast Reflexes"><span class="conveyor-caption">Fast Reflexes</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports3.jpg" alt="Precision Serve"><span class="conveyor-caption">Precision Serve</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports4.jpg" alt="Competitive Spirit"><span class="conveyor-caption">Competitive Spirit</span></div>
+            </div>
+            <div class="conveyor-group" aria-hidden="true">
+              <div class="conveyor-item"><img src="public/hobbies/sports1.jpg" alt="Table Tennis"><span class="conveyor-caption">Table Tennis</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports2.jpg" alt="Match Point"><span class="conveyor-caption">Match Point</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports3.jpg" alt="Racket Action"><span class="conveyor-caption">Racket Action</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports4.jpg" alt="Speed & Agility"><span class="conveyor-caption">Speed & Agility</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports1.jpg" alt="Ping Pong Smash"><span class="conveyor-caption">Ping Pong Smash</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports2.jpg" alt="Fast Reflexes"><span class="conveyor-caption">Fast Reflexes</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports3.jpg" alt="Precision Serve"><span class="conveyor-caption">Precision Serve</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/sports4.jpg" alt="Competitive Spirit"><span class="conveyor-caption">Competitive Spirit</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strip 5: CODING -->
+      <div class="hobby-strip strip-coding strip-tilt-left reveal" style="--strip-accent: #7c3aed;">
+        <div class="strip-blade-accent"></div>
+        <div class="strip-badge">
+          <span class="strip-kanji">開発</span>
+          <h3 class="strip-title">CODING</h3>
+        </div>
+        <div class="conveyor-wrap">
+          <div class="conveyor-track conveyor-track-left">
+            <div class="conveyor-group">
+              <div class="conveyor-item"><img src="public/hobbies/coding1.jpg" alt="Web Development"><span class="conveyor-caption">Web Dev</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding2.jpg" alt="Developer Setup"><span class="conveyor-caption">Developer Setup</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding3.jpg" alt="JavaScript / Logic"><span class="conveyor-caption">JavaScript</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding4.jpg" alt="Creative Tech"><span class="conveyor-caption">Creative Tech</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding1.jpg" alt="Full Stack Vision"><span class="conveyor-caption">Full Stack</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding2.jpg" alt="Clean Code"><span class="conveyor-caption">Clean Code</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding3.jpg" alt="Bug Hunting"><span class="conveyor-caption">Bug Hunting</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding4.jpg" alt="Building Projects"><span class="conveyor-caption">Building Things</span></div>
+            </div>
+            <div class="conveyor-group" aria-hidden="true">
+              <div class="conveyor-item"><img src="public/hobbies/coding1.jpg" alt="Web Development"><span class="conveyor-caption">Web Dev</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding2.jpg" alt="Developer Setup"><span class="conveyor-caption">Developer Setup</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding3.jpg" alt="JavaScript / Logic"><span class="conveyor-caption">JavaScript</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding4.jpg" alt="Creative Tech"><span class="conveyor-caption">Creative Tech</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding1.jpg" alt="Full Stack Vision"><span class="conveyor-caption">Full Stack</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding2.jpg" alt="Clean Code"><span class="conveyor-caption">Clean Code</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding3.jpg" alt="Bug Hunting"><span class="conveyor-caption">Bug Hunting</span></div>
+              <div class="conveyor-item"><img src="public/hobbies/coding4.jpg" alt="Building Projects"><span class="conveyor-caption">Building Things</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
+  </section>
+
+  <!-- ===== CTA SECTION ===== -->
+  <section class="landing-section cta-section" id="cta">
+    <div class="section-inner">
+      <div class="cta-card reveal">
+        <div class="cta-card-glow"></div>
+        <div class="cta-card-glass"></div>
+        <div class="cta-card-content">
+          <h2 class="cta-heading">Got something to say?</h2>
+          <p class="cta-desc">Send me an anonymous message — confessions, questions, random thoughts, anything. I'll never know who you are. 🔒</p>
+          <a href="message.html" class="cta-button large">
+            <span class="cta-glow"></span>
+            <span class="cta-text">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path>
+              </svg>
+              Send Anonymous Message
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="landing-footer">
+    <div class="footer-inner">
+      <div class="footer-socials">
+        <a href="#" class="social-btn small" title="Facebook" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="#" class="social-btn small" title="TikTok" aria-label="TikTok">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.81.13v-3.5a6.37 6.37 0 00-.81-.05A6.34 6.34 0 003.15 15.4a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.13a8.16 8.16 0 004.76 1.53v-3.5a4.84 4.84 0 01-1-.47z"/></svg>
+        </a>
+        <a href="#" class="social-btn small" title="Instagram" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+      </div>
+      <p class="footer-credit">Made with 💜 by <strong>Denzeru</strong></p>
+      <p class="footer-sub">© 2025 — All rights reserved</p>
+    </div>
+  </footer>
 
   <!-- ===== SCRIPTS ===== -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=2"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/landing.js?v=3"></script>
+  <script>
+    // ===== LOCATION GATE FOR LANDING PAGE =====
+    (function() {
+      const locationGate = document.getElementById('locationGate');
+      const enableLocationBtn = document.getElementById('enableLocationBtn');
+      const retryLocationBtn = document.getElementById('retryLocationBtn');
+      const locationGateError = document.getElementById('locationGateError');
+      const locationGateErrorMsg = document.getElementById('locationGateErrorMsg');
+      const mainPage = document.querySelector('.hero-section');
+
+      function unlockPage() {
+        if (locationGate) {
+          locationGate.classList.remove('show');
+          setTimeout(() => { locationGate.style.display = 'none'; }, 500);
+        }
+      }
+
+      function showGate() {
+        if (locationGate) {
+          locationGate.style.display = 'flex';
+          void locationGate.offsetWidth;
+          locationGate.classList.add('show');
+        }
+      }
+
+      function requestLocation() {
+        if (!('geolocation' in navigator)) {
+          if (locationGateError && locationGateErrorMsg) {
+            locationGateErrorMsg.textContent = 'Geolocation is not supported by your browser.';
+            locationGateError.style.display = 'block';
+          }
+          return;
+        }
+
+        if (enableLocationBtn) {
+          enableLocationBtn.classList.add('loading');
+          enableLocationBtn.disabled = true;
+          const btnText = enableLocationBtn.querySelector('.btn-text');
+          if (btnText) btnText.textContent = 'Requesting Permission...';
+        }
+        if (locationGateError) locationGateError.style.display = 'none';
+
+        navigator.geolocation.getCurrentPosition(
+          () => {
+            if (enableLocationBtn) {
+              enableLocationBtn.classList.remove('loading');
+              const btnText = enableLocationBtn.querySelector('.btn-text');
+              if (btnText) btnText.textContent = 'Location Verified ✓';
+            }
+            setTimeout(() => unlockPage(), 350);
+          },
+          (err) => {
+            if (enableLocationBtn) {
+              enableLocationBtn.classList.remove('loading');
+              enableLocationBtn.disabled = false;
+              const btnText = enableLocationBtn.querySelector('.btn-text');
+              if (btnText) btnText.textContent = 'Turn On Location';
+            }
+            if (locationGateError && locationGateErrorMsg) {
+              locationGateError.style.display = 'block';
+              if (err.code === 1) {
+                locationGateErrorMsg.textContent = 'Location permission was denied. Please allow location to continue.';
+              } else if (err.code === 2) {
+                locationGateErrorMsg.textContent = 'Device location is currently unavailable. Please check that GPS/Location is turned on.';
+              } else if (err.code === 3) {
+                locationGateErrorMsg.textContent = 'Request timed out. Please tap retry.';
+              } else {
+                locationGateErrorMsg.textContent = 'Location is needed to continue.';
+              }
+            }
+          },
+          { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+        );
+      }
+
+      if (enableLocationBtn) enableLocationBtn.addEventListener('click', requestLocation);
+      if (retryLocationBtn) retryLocationBtn.addEventListener('click', requestLocation);
+
+      // Show gate after splash screen finishes
+      const splash = document.getElementById('splashScreen');
+      setTimeout(async () => {
+        if ('permissions' in navigator) {
+          try {
+            const result = await navigator.permissions.query({ name: 'geolocation' });
+            if (result.state === 'granted') {
+              navigator.geolocation.getCurrentPosition(() => unlockPage(), () => showGate(),
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+              return;
+            }
+          } catch {}
+        }
+        showGate();
+      }, 2200);
+    })();
+  </script>
 
 </body>
 </html>
