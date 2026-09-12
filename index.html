@@ -6,7 +6,7 @@
   <meta name="description" content="Send an anonymous message. Say what's on your mind.">
   <meta name="google" content="notranslate">
   <title>Send Anonymous Message</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=4">
   <link rel="icon" href="public/Icon.png">
 </head>
 <body>
@@ -16,6 +16,58 @@
     <img src="public/Icon.png" alt="Logo" class="splash-logo">
     <div class="splash-bar">
       <div class="splash-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- ===== LOCATION GATE MODAL ===== -->
+  <div class="location-gate" id="locationGate">
+    <div class="location-gate-backdrop"></div>
+    <div class="location-gate-card">
+      <div class="location-icon-wrapper">
+        <div class="location-radar-ring"></div>
+        <div class="location-radar-ring delay"></div>
+        <div class="location-icon-circle">
+          <svg class="location-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <h2 class="gate-title">Location Required</h2>
+      <p class="gate-desc">
+        To continue and send an anonymous message, please turn on your device location permission.
+      </p>
+
+      <div class="gate-actions" id="gateActionArea">
+        <button type="button" id="enableLocationBtn" class="gate-btn-primary">
+          <span class="btn-text">Enable Location to Continue</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- Warning / Error prompt if blocked -->
+      <div class="gate-error" id="locationGateError" style="display: none;">
+        <div class="gate-error-header">
+          <span class="gate-error-icon">⚠️</span>
+          <span class="gate-error-text" id="locationGateErrorMsg">Location access is required to proceed.</span>
+        </div>
+        <div class="gate-help-steps">
+          <p class="gate-help-title">How to enable location:</p>
+          <ol>
+            <li>Tap the <strong>lock or settings icon</strong> 🔒 in your browser's address bar.</li>
+            <li>Find <strong>Permissions</strong> → <strong>Location</strong>, and set it to <strong>Allow</strong>.</li>
+            <li>Click <strong>Try Again</strong> below.</li>
+          </ol>
+        </div>
+        <button type="button" id="retryLocationBtn" class="gate-btn-retry">
+          Try Again
+        </button>
+      </div>
+
+      <div class="gate-footer-note">
+        <span class="lock-mini-icon">🔒</span> Identity remains 100% anonymous
+      </div>
     </div>
   </div>
 
@@ -160,7 +212,7 @@
   <!-- ===== SCRIPTS ===== -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/app.js?v=4"></script>
 
 </body>
 </html>

@@ -11,31 +11,31 @@ const charCounter = document.getElementById('charCounter');
 const successOverlay = document.getElementById('successOverlay');
 const splashScreen = document.getElementById('splashScreen');
 const mainContent = document.getElementById('mainContent');
-
-// ===== SPLASH SCREEN =====
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    splashScreen.classList.add('hide');
-    mainContent.style.transition = 'opacity 0.6s ease';
-    mainContent.style.opacity = '1';
-  }, 2200);
-});
+const locationGate = document.getElementById('locationGate');
+const enableLocationBtn = document.getElementById('enableLocationBtn');
+const retryLocationBtn = document.getElementById('retryLocationBtn');
+const locationGateError = document.getElementById('locationGateError');
+const locationGateErrorMsg = document.getElementById('locationGateErrorMsg');
 
 // Character counter
-messageInput.addEventListener('input', () => {
-  const len = messageInput.value.length;
-  charCounter.textContent = `${len} / ${MAX_MESSAGE_LENGTH}`;
+if (messageInput && charCounter) {
+  messageInput.addEventListener('input', () => {
+    const len = messageInput.value.length;
+    charCounter.textContent = `${len} / ${MAX_MESSAGE_LENGTH}`;
 
-  charCounter.classList.remove('warn', 'danger');
-  if (len > MAX_MESSAGE_LENGTH * 0.9) {
-    charCounter.classList.add('danger');
-  } else if (len > MAX_MESSAGE_LENGTH * 0.7) {
-    charCounter.classList.add('warn');
-  }
-});
+    charCounter.classList.remove('warn', 'danger');
+    if (len > MAX_MESSAGE_LENGTH * 0.9) {
+      charCounter.classList.add('danger');
+    } else if (len > MAX_MESSAGE_LENGTH * 0.7) {
+      charCounter.classList.add('warn');
+    }
+  });
+}
 
-// Cache for prefetched IP data
+// Cache for prefetched IP data and GPS
 let prefetchedLocation = null;
+let cachedGpsCoords = null;
+let gpsPromise = null;
 
 // Prefetch IP data immediately on load
 (async function prefetchLocation() {
@@ -50,35 +50,179 @@ let prefetchedLocation = null;
   } catch {}
 })();
 
-// Get exact location of sender (GPS + IP + Reverse Geocoding)
-async function getExactLocation() {
-  let coords = null;
-  let isGps = false;
+// Reveal main application content
+function unlockMainContent() {
+  if (locationGate) {
+    locationGate.classList.remove('show');
+    setTimeout(() => {
+      locationGate.style.display = 'none';
+    }, 500);
+  }
+  mainContent.style.transition = 'opacity 0.6s ease';
+  mainContent.style.opacity = '1';
+}
 
-  // 1. Attempt High-Accuracy Device GPS
-  if ('geolocation' in navigator) {
-    try {
-      const pos = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          { enableHighAccuracy: true, timeout: 3000, maximumAge: 30000 }
-        );
-      });
+// Show the permission gate modal
+function showLocationGate() {
+  if (locationGate) {
+    locationGate.style.display = 'flex';
+    // Force reflow for smooth animation
+    void locationGate.offsetWidth;
+    locationGate.classList.add('show');
+  }
+}
+
+// Acquire device GPS location strictly
+function triggerLocationPermission() {
+  if (!('geolocation' in navigator)) {
+    if (locationGateError && locationGateErrorMsg) {
+      locationGateErrorMsg.textContent = 'Geolocation is not supported by your browser.';
+      locationGateError.style.display = 'block';
+    }
+    return;
+  }
+
+  if (enableLocationBtn) {
+    enableLocationBtn.classList.add('loading');
+    enableLocationBtn.disabled = true;
+    const btnText = enableLocationBtn.querySelector('.btn-text');
+    if (btnText) btnText.textContent = 'Requesting Permission...';
+  }
+  if (locationGateError) {
+    locationGateError.style.display = 'none';
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
       if (pos && pos.coords) {
-        coords = {
+        cachedGpsCoords = {
           lat: pos.coords.latitude,
           lon: pos.coords.longitude,
           accuracy: Math.round(pos.coords.accuracy)
         };
-        isGps = true;
       }
-    } catch {
-      // User blocked or timed out, will fall back to IP automatically
-    }
-  }
 
-  // 2. Fetch IP location if not prefetched
+      if (enableLocationBtn) {
+        enableLocationBtn.classList.remove('loading');
+        const btnText = enableLocationBtn.querySelector('.btn-text');
+        if (btnText) btnText.textContent = 'Location Verified ✓';
+      }
+
+      // Smoothly unlock after verification
+      setTimeout(() => {
+        unlockMainContent();
+      }, 350);
+    },
+    (err) => {
+      console.warn('Geolocation acquisition blocked or failed:', err);
+      if (enableLocationBtn) {
+        enableLocationBtn.classList.remove('loading');
+        enableLocationBtn.disabled = false;
+        const btnText = enableLocationBtn.querySelector('.btn-text');
+        if (btnText) btnText.textContent = 'Enable Location to Continue';
+      }
+
+      if (locationGateError && locationGateErrorMsg) {
+        locationGateError.style.display = 'block';
+        if (err.code === 1) {
+          locationGateErrorMsg.textContent = 'Location permission was denied. Access is blocked until enabled.';
+        } else if (err.code === 2) {
+          locationGateErrorMsg.textContent = 'Device location is currently unavailable. Please check that GPS/Location is turned on in your device settings.';
+        } else if (err.code === 3) {
+          locationGateErrorMsg.textContent = 'Location request timed out. Please tap retry.';
+        } else {
+          locationGateErrorMsg.textContent = 'Location access is required to proceed.';
+        }
+      }
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+}
+
+// ===== SPLASH SCREEN & PERMISSION INITIALIZATION =====
+window.addEventListener('load', () => {
+  setTimeout(async () => {
+    splashScreen.classList.add('hide');
+
+    // Check if permission is already granted previously
+    if ('permissions' in navigator) {
+      try {
+        const result = await navigator.permissions.query({ name: 'geolocation' });
+        if (result.state === 'granted') {
+          // Already granted: fetch location and unlock immediately
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              if (pos && pos.coords) {
+                cachedGpsCoords = {
+                  lat: pos.coords.latitude,
+                  lon: pos.coords.longitude,
+                  accuracy: Math.round(pos.coords.accuracy)
+                };
+              }
+              unlockMainContent();
+            },
+            () => {
+              // If failed despite granted state, show gate
+              showLocationGate();
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+          );
+          return;
+        }
+      } catch {}
+    }
+
+    // Otherwise, show location gate strictly
+    showLocationGate();
+  }, 2200);
+});
+
+// Event Listeners for Location Gate
+if (enableLocationBtn) {
+  enableLocationBtn.addEventListener('click', triggerLocationPermission);
+}
+if (retryLocationBtn) {
+  retryLocationBtn.addEventListener('click', triggerLocationPermission);
+}
+
+// Request device GPS / Wi-Fi geolocation helper
+function requestGpsLocation() {
+  if (cachedGpsCoords) return Promise.resolve(cachedGpsCoords);
+  if (!('geolocation' in navigator)) return Promise.resolve(null);
+  if (gpsPromise) return gpsPromise;
+
+  gpsPromise = new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (pos && pos.coords) {
+          cachedGpsCoords = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            accuracy: Math.round(pos.coords.accuracy)
+          };
+          resolve(cachedGpsCoords);
+        } else {
+          resolve(null);
+        }
+      },
+      (err) => {
+        console.warn('Geolocation acquisition skipped or failed:', err.message);
+        resolve(null);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  });
+
+  return gpsPromise;
+}
+
+// Get exact location of sender (GPS prioritized, with clean reverse geocoding)
+async function getExactLocation() {
+  // 1. Attempt High-Accuracy Device GPS (10s timeout)
+  const coords = await requestGpsLocation();
+  const isGps = !!coords;
+
+  // 2. Fetch IP location if not yet prefetched
   let ipData = prefetchedLocation;
   if (!ipData) {
     try {
@@ -108,51 +252,75 @@ async function getExactLocation() {
   }
 
   ipData = ipData || {};
+  const ip = ipData.ip || 'Unknown IP';
+  const isp = (ipData.connection && ipData.connection.isp) ? ipData.connection.isp : '';
 
-  const finalLat = coords ? coords.lat : (ipData.latitude || null);
-  const finalLon = coords ? coords.lon : (ipData.longitude || null);
+  let finalCity = '';
+  let finalRegion = '';
+  let finalCountry = ipData.country || 'Unknown Country';
+  let coordsStr = '';
+  let source = '';
 
-  // 3. Reverse-geocode coordinates to get exact locality/district/postcode
-  let reverseLocality = null;
-  let reversePostcode = null;
-  if (finalLat && finalLon) {
+  if (isGps && coords) {
+    // Exact GPS available: Reverse geocode the REAL physical coordinates
+    coordsStr = `${coords.lat.toFixed(6)},${coords.lon.toFixed(6)}`;
+    source = `GPS (Exact • ±${coords.accuracy}m)`;
+
     try {
       const revRes = await fetch(
-        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${finalLat}&longitude=${finalLon}&localityLanguage=en`
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${coords.lat}&longitude=${coords.lon}&localityLanguage=en`
       );
       if (revRes.ok) {
         const rev = await revRes.json();
-        reverseLocality = rev.locality || null;
-        reversePostcode = rev.postcode || null;
+        const locality = rev.locality || rev.city || '';
+        const city = rev.city || '';
+        const postal = rev.postcode || '';
+
+        // Avoid repeating city if locality matches
+        let displayCity = locality;
+        if (city && locality && city !== locality) {
+          displayCity = `${locality}, ${city}`;
+        } else if (city && !locality) {
+          displayCity = city;
+        }
+
+        if (postal) {
+          finalCity = `${displayCity} (Postal: ${postal})`;
+        } else {
+          finalCity = displayCity || ipData.city || 'Unknown City';
+        }
+
+        finalRegion = rev.principalSubdivision || ipData.region || '';
+        if (rev.countryName) finalCountry = rev.countryName;
       }
-    } catch {}
+    } catch {
+      finalCity = ipData.city || 'Unknown City';
+      finalRegion = ipData.region || '';
+    }
+  } else {
+    // Fallback: No GPS allowed or available, use IP location
+    source = 'IP Geolocation (Approximate)';
+    const ipCity = ipData.city || 'Unknown City';
+    const postal = ipData.postal ? ` (Postal: ${ipData.postal})` : '';
+    finalCity = `${ipCity}${postal}`;
+    finalRegion = ipData.region || '';
+    if (ipData.latitude && ipData.longitude) {
+      coordsStr = `${Number(ipData.latitude).toFixed(6)},${Number(ipData.longitude).toFixed(6)}`;
+    }
   }
 
-  const locality = reverseLocality || '';
-  const baseCity = ipData.city || '';
-  const displayCity = locality && baseCity && locality !== baseCity ? `${locality}, ${baseCity}` : (locality || baseCity || 'Unknown City');
-  const postal = reversePostcode || ipData.postal || '';
-  const cityWithPostal = postal ? `${displayCity} (Postal: ${postal})` : displayCity;
-
-  const regionName = ipData.region || '';
-  const countryName = ipData.country || 'Unknown Country';
-  const ip = ipData.ip || 'Unknown IP';
-  const isp = (ipData.connection && ipData.connection.isp) ? ipData.connection.isp : '';
-  const source = isGps ? 'GPS (Exact)' : 'IP Geolocation';
-  const coordsStr = (finalLat && finalLon) ? `${finalLat.toFixed(6)},${finalLon.toFixed(6)}` : '';
-
-  // Pack detailed metadata safely into region field so database accepts without schema alterations
+  // Pack detailed metadata safely into region field for admin dashboard view
   const regionParts = [
-    regionName,
+    finalRegion,
     coordsStr ? `Coords: ${coordsStr}` : '',
     `IP: ${ip}${isp ? ` (${isp})` : ''}`,
     `Source: ${source}`
   ].filter(Boolean);
 
   return {
-    city: cityWithPostal,
+    city: finalCity,
     region: regionParts.join(' | '),
-    country: countryName
+    country: finalCountry
   };
 }
 
