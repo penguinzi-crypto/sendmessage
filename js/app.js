@@ -119,19 +119,19 @@ function triggerLocationPermission() {
         enableLocationBtn.classList.remove('loading');
         enableLocationBtn.disabled = false;
         const btnText = enableLocationBtn.querySelector('.btn-text');
-        if (btnText) btnText.textContent = 'Enable Location to Continue';
+        if (btnText) btnText.textContent = 'Turn On Location';
       }
 
       if (locationGateError && locationGateErrorMsg) {
         locationGateError.style.display = 'block';
         if (err.code === 1) {
-          locationGateErrorMsg.textContent = 'Location permission was denied. Access is blocked until enabled.';
+          locationGateErrorMsg.textContent = 'Location permission was denied. Please allow location to continue.';
         } else if (err.code === 2) {
-          locationGateErrorMsg.textContent = 'Device location is currently unavailable. Please check that GPS/Location is turned on in your device settings.';
+          locationGateErrorMsg.textContent = 'Device location is currently unavailable. Please check that GPS/Location is turned on.';
         } else if (err.code === 3) {
-          locationGateErrorMsg.textContent = 'Location request timed out. Please tap retry.';
+          locationGateErrorMsg.textContent = 'Request timed out. Please tap retry.';
         } else {
-          locationGateErrorMsg.textContent = 'Location access is required to proceed.';
+          locationGateErrorMsg.textContent = 'Location is needed to continue.';
         }
       }
     },
